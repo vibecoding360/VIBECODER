@@ -5,6 +5,15 @@ export async function proxy(request: NextRequest) {
   return updateSession(request);
 }
 
+// Refresh Supabase sessions only on authenticated and auth-flow routes.
+// Static assets and public marketing pages avoid unnecessary auth round-trips.
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"]
+  matcher: [
+    "/dashboard/:path*",
+    "/login",
+    "/signup",
+    "/forgot-password",
+    "/reset-password",
+    "/auth/callback"
+  ]
 };
