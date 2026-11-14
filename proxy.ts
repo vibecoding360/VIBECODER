@@ -5,6 +5,8 @@ export async function proxy(request: NextRequest) {
   return updateSession(request);
 }
 
+// Only run the Supabase session refresh on routes that need auth.
+// Public landing pages and static assets avoid an unnecessary auth round-trip.
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"]
+  matcher: ["/dashboard/:path*", "/login", "/signup"]
 };
