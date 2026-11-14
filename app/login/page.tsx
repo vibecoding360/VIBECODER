@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { login } from "./actions";
 
-export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string; next?: string }> }) {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string; message?: string; next?: string }> }) {
   const params = await searchParams;
   return (
     <main className="flex min-h-screen items-center justify-center px-6 py-12">
@@ -11,6 +11,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           <p className="text-xs uppercase tracking-[.2em] text-[#9cf36b]">Welcome back</p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight">Sign in to your flow.</h1>
           <p className="mt-2 text-sm text-slate-400">Pick up where you left off.</p>
+          {params.message && <p role="status" className="mt-5 rounded-xl border border-[#9cf36b]/20 bg-[#9cf36b]/10 p-3 text-sm text-[#b4ff8c]">{params.message}</p>}
           {params.error && <p role="alert" className="mt-5 rounded-xl border border-red-400/20 bg-red-400/10 p-3 text-sm text-red-300">{params.error}</p>}
           <form action={login} className="mt-7 space-y-4">
             <input type="hidden" name="next" value={params.next ?? "/dashboard"} />
