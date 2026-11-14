@@ -11,9 +11,10 @@ export function FocusTimer() {
   const [running, setRunning] = useState(false);
   const [pending, startTransition] = useTransition();
   const completionSaved = useRef(false);
+  const isComplete = remaining === 0;
 
   useEffect(() => {
-    if (!running) return;
+    if (!running || isComplete) return;
     const timer = window.setInterval(() => {
       setRemaining((current) => {
         if (current <= 1) {
@@ -24,14 +25,14 @@ export function FocusTimer() {
       });
     }, 1000);
     return () => window.clearInterval(timer);
-  }, [running]);
+  }, [running, isComplete]);
 
   useEffect(() => {
-    if (remaining === 0 && running && minutes !== 5 && !completionSaved.current) {
+    if (isComplete && running && minutes !== 5 && !completionSaved.current) {
       completionSaved.current = true;
       startTransition(() => { void saveFocusSession(minutes * 60); });
     }
-  }, [remaining, running, minutes]);
+  }, [isComplete, running, minutes]);
 
   const reset = (nextMinutes = minutes) => {
     completionSaved.current = false;
@@ -48,7 +49,7 @@ export function FocusTimer() {
     }
     setRunning((value) => !value);
   };
-  const active = running && remaining > 0;
+  const active = running && !isComplete;
   const display = `${String(Math.floor(remaining / 60)).padStart(2,"0")}:${String(remaining % 60).padStart(2,"0")}`;
   const progress = ((minutes * 60 - remaining) / (minutes * 60)) * 100;
 
