@@ -10,7 +10,7 @@ export default async function ForgotPasswordPage({ searchParams }: { searchParam
         <div className="mt-10 rounded-3xl border border-white/10 bg-[#111827]/80 p-8 shadow-2xl">
           <p className="text-xs uppercase tracking-[.2em] text-[#9cf36b]">Account recovery</p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight">Reset your password.</h1>
-          <p className="mt-2 text-sm text-slate-400">We'll email you a secure link to choose a new password.</p>
+          <p className="mt-2 text-sm text-slate-400">We&apos;ll email you a secure link to choose a new password.</p>
           {params.error && <p role="alert" className="mt-5 rounded-xl border border-red-400/20 bg-red-400/10 p-3 text-sm text-red-300">{params.error}</p>}
           {params.message && <p role="status" className="mt-5 rounded-xl border border-[#9cf36b]/20 bg-[#9cf36b]/10 p-3 text-sm text-[#b4ff8c]">{params.message}</p>}
           <form action={requestPasswordReset} className="mt-7 space-y-4">
