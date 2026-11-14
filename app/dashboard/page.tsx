@@ -17,11 +17,15 @@ export default async function DashboardPage() {
   const metadata = claims.claims.user_metadata;
   const name = metadata && typeof metadata === "object" && "display_name" in metadata && typeof metadata.display_name === "string" ? metadata.display_name : "there";
 
+  // Keep independent reads parallel and request only fields rendered by this page.
+  const today = new Date();
+  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
+  const todayDate = today.toISOString().slice(0, 10);
   const [{ data: tasks }, { data: habits }, { data: sessions }, { data: entries }] = await Promise.all([
-    supabase.from("tasks").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(50),
-    supabase.from("habits").select("*").eq("user_id", userId).order("created_at", { ascending: false }),
-    supabase.from("focus_sessions").select("duration_seconds,started_at").eq("user_id", userId).gte("started_at", new Date(new Date().setHours(0,0,0,0)).toISOString()),
-    supabase.from("habit_entries").select("habit_id").eq("user_id", userId).eq("completed_on", new Date().toISOString().slice(0,10))
+    supabase.from("tasks").select("id,title,status,priority,created_at").eq("user_id", userId).order("created_at", { ascending: false }).limit(50),
+    supabase.from("habits").select("id,name,created_at").eq("user_id", userId).order("created_at", { ascending: false }),
+    supabase.from("focus_sessions").select("duration_seconds").eq("user_id", userId).gte("started_at", todayStart),
+    supabase.from("habit_entries").select("habit_id").eq("user_id", userId).eq("completed_on", todayDate)
   ]);
   const taskList = tasks ?? [];
   const habitList = habits ?? [];
