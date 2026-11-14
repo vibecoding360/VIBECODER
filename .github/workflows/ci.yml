@@ -1,0 +1,41 @@
+name: FocusFlow CI
+
+on:
+  push:
+    branches: [focusflow-app]
+  pull_request:
+    branches: [focusflow-app]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality-and-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://vspmajfdndeotbvoyxgr.supabase.co
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_ww-zC3z8OQaCi7FMcxm7Ig_ZfKhZq1A
+      NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+      CI: true
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm install
+      - name: TypeScript validation
+        run: npm run typecheck
+      - name: Lint
+        run: npm run lint
+      - name: Production build
+        run: npm run build
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+      - name: Browser end-to-end tests
+        run: npm run test:e2e
