@@ -5,8 +5,15 @@ export async function proxy(request: NextRequest) {
   return updateSession(request);
 }
 
-// Only run the Supabase session refresh on routes that need auth.
-// Public landing pages and static assets avoid an unnecessary auth round-trip.
+// Refresh Supabase sessions only on authenticated and auth-flow routes.
+// Static assets and public marketing pages avoid unnecessary auth round-trips.
 export const config = {
-  matcher: ["/dashboard/:path*", "/login", "/signup"]
+  matcher: [
+    "/dashboard/:path*",
+    "/login",
+    "/signup",
+    "/forgot-password",
+    "/reset-password",
+    "/auth/callback"
+  ]
 };
